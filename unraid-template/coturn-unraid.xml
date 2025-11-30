@@ -7,29 +7,45 @@
   <MyIP/>
   <Shell>bash</Shell>
   <Privileged>false</Privileged>
+
   <Support>https://github.com/m975261/coturn-docker-unraid/issues</Support>
   <Project>https://github.com/m975261/coturn-docker-unraid</Project>
-  <Overview>This is a Coturn TURN server preconfigured for Unraid, with dynamic configuration generated from environment variables. Supports TURN, STUN, UDP, TCP, and optional TLS. Before installation, fill in REALM, EXTERNAL_IP, USERNAME, PASSWORD, and optional certificate paths.</Overview>
+
+  <Overview>
+This is a dynamic Coturn TURN server optimized for Unraid with full support for:
+- Dynamic public IP using ddns.rotiti.com
+- Cloudflare DNS (DNS-Only)
+- Automatic dynamic external IP resolution
+- TURN, STUN, UDP/TCP
+- Optional TLS with Let's Encrypt certificates
+- Full environment variable configuration from template
+  </Overview>
+
   <Category>Network:Proxy Network:Tools</Category>
+
   <WebUI/>
   <Icon>https://raw.githubusercontent.com/m975261/coturn-docker-unraid/main/icon.png</Icon>
 
-  <Config Name="REALM (Domain Name)" Target="REALM" Default="example.com" Type="Variable" Description="Enter your TURN server realm / domain name. Example: turn.mydomain.ae" Required="true" Mask="false"/>
-  
-  <Config Name="PUBLIC IP (External Server IP)" Target="EXTERNAL_IP" Default="0.0.0.0" Type="Variable" Description="Enter your server's PUBLIC IP address." Required="true" Mask="false"/>
+  <!-- TURN SERVER CONFIGURATION VARIABLES -->
+  <Config Name="REALM (Domain Name)" Target="REALM" Default="ddns.rotiti.com" Type="Variable" Description="TURN Realm. Use your DNS hostname here." Required="true" Mask="false"/>
 
-  <Config Name="TURN Username" Target="USERNAME" Default="turnuser" Type="Variable" Description="Username for TURN authentication." Required="true" Mask="false"/>
+  <Config Name="EXTERNAL_IP or DNS" Target="EXTERNAL_IP" Default="ddns.rotiti.com" Type="Variable" Description="Your public IP or DNS hostname (Dynamic IP supported through ddns.rotiti.com)" Required="true" Mask="false"/>
 
-  <Config Name="TURN Password" Target="PASSWORD" Default="StrongPassword123!" Type="Variable" Description="Password for TURN authentication." Required="true" Mask="true"/>
+  <Config Name="TURN Username" Target="USERNAME" Default="rotiti" Type="Variable" Description="TURN Authentication Username" Required="true" Mask="false"/>
 
-  <Config Name="TLS Certificate Path (Optional)" Target="TLS_CERT" Default="" Type="Variable" Description="Absolute path to your TLS certificate inside the container (optional)." Required="false" Mask="false"/>
+  <Config Name="TURN Password" Target="PASSWORD" Default="RotitiTurnPass!2025" Type="Variable" Description="TURN Authentication Password" Required="true" Mask="true"/>
 
-  <Config Name="TLS Private Key Path (Optional)" Target="TLS_KEY" Default="" Type="Variable" Description="Absolute path to your private key inside the container (optional)." Required="false" Mask="false"/>
+  <!-- TLS CONFIGURATION -->
+  <Config Name="TLS Certificate Path" Target="TLS_CERT" Default="/etc/certs/fullchain.pem" Type="Variable" Description="Path to TLS certificate (optional)" Required="false" Mask="false"/>
 
-  <Config Name="Timezone" Target="TZ" Default="Asia/Dubai" Type="Variable" Description="Timezone setting for the container." Required="true" Mask="false"/>
+  <Config Name="TLS Private Key Path" Target="TLS_KEY" Default="/etc/certs/privkey.pem" Type="Variable" Description="Path to TLS private key (optional)" Required="false" Mask="false"/>
 
-  <Config Name="Appdata Folder" Target="/config" Default="/mnt/user/appdata/coturn-unraid" Type="Path" Description="Appdata location where config and logs may be stored." Required="true" Mask="false"/>
+  <!-- GENERAL SETTINGS -->
+  <Config Name="Timezone" Target="TZ" Default="Asia/Dubai" Type="Variable" Description="Timezone setting" Required="true" Mask="false"/>
 
+  <Config Name="Appdata Folder" Target="/config" Default="/mnt/user/appdata/coturn-unraid" Type="Path" Description="Persistent storage for configuration" Required="true" Mask="false"/>
+
+  <!-- Extra params -->
   <ExtraParams>--pids-limit=2048</ExtraParams>
 
   <DockerHub>repo</DockerHub>
