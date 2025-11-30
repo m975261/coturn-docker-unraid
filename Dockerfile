@@ -24,4 +24,6 @@ EXPOSE 5349/tcp
 USER nobody
 
 # Start coturn
-ENTRYPOINT ["/usr/bin/turnserver", "-c", "/etc/turnserver.conf", "--no-cli"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
